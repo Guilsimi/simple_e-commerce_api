@@ -4,8 +4,7 @@ public enum UserType {
 
     SELLER(1),
     CLIENT(2),
-    SUPPORT(3),
-    ADMIN(4);
+    ADMIN(3);
 
     private int code;
 
