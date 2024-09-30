@@ -4,10 +4,20 @@ import java.util.Date;
 
 import com.example.ec_order.entites.enums.Status;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_order")
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date data;
+    private Date date;
     private Double total;
     private int status;
 
@@ -15,9 +25,9 @@ public class Order {
 
     }
 
-    public Order(Long id, Date data, Double total, Status status) {
+    public Order(Long id, Date date, Double total, Status status) {
         this.id = id;
-        this.data = data;
+        this.date = date;
         this.total = total;
         setStatus(status);
     }
@@ -30,12 +40,12 @@ public class Order {
         this.id = id;
     }
 
-    public Date getData() {
-        return data;
+    public Date getDate() {
+        return date;
     }
 
-    public void setData(Date data) {
-        this.data = data;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Double getTotal() {

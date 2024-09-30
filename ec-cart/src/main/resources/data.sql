@@ -1,0 +1,2 @@
+INSERT INTO tb_cart (creation_date)
+VALUES (CURRENT_TIMESTAMP);
