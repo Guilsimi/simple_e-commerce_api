@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>ec-cart</artifactId>
+	<artifactId>ec-order</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ec-cart</name>
+	<name>ec-order</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -49,7 +49,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
- </dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
