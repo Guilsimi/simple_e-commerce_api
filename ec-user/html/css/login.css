@@ -1,0 +1,147 @@
+body{
+    margin: 0;
+    padding: 0;
+    background: rgb(58, 58, 58);
+    display: flex;
+    justify-content: center;
+    
+}
+
+.container{
+    width: 100vw;
+    height: 100vh;
+    border: 1px solid;
+   display: flex;
+   
+}
+.content{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    height: 80%;
+    justify-content: center;
+    margin: auto;
+    border-radius: 30px;
+
+}
+.login{
+   border-radius: 0 30px 30px 0px;
+    width: 70%;
+    height: 100%;
+    background-color: aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+}
+input{
+    border: none;
+    height: 25px;
+    width: 70%;
+    border-radius: 5px;
+    background-color: transparent;
+    border-bottom: 1px solid white;
+    transition: .6s;
+}
+
+input::placeholder{
+    color: white;
+    opacity: .6;
+}
+
+input:hover{
+    width: 90%;
+    transition: .6s;
+}
+
+form{
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    
+    width: 70%;
+    background-color: rgba(27, 27, 27, 0.4);
+    border-bottom: 2px solid white;
+    border-top: 2px solid white;
+    color: aliceblue;
+    font-weight: bolder;
+    font-size: 18px;
+
+}
+
+a{
+   transition: .6s;
+   text-decoration: none;
+   font-size: 12px;
+}
+
+a:hover{
+
+    color: red;
+    transition: .6s;
+    font-size: 20px;
+}
+h1{
+    background-image: url(https://wallpaper4k.top/wp-content/uploads/2023/10/Luxury-Home-HD-Photo-HD-Wallpapers-1024x683.jpg);
+    background-size: cover;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    font-size: 70px;
+}
+.fotos{
+    border-radius: 30px 0px 0 30px;
+    background-color: antiquewhite;
+    width: 100%;
+    height: 100%;
+    animation: fotos 15s linear infinite;
+
+}
+
+@keyframes fotos{
+    0%{
+        background-image: url(https://cdn.dooca.store/2624/products/lhbvsmgdzdljqgbnftng9zo1urzcntg3wnwr_640x640+fill_ffffff.jpg?v=1707228609&webp=0);
+        background-size:cover;
+    }
+    33%{
+        background-image: url(https://cf.shopee.com.br/file/576904a88bf1711c7ca6b0904fe30c45);
+        background-size:cover;
+    }
+    66%{background-image: url(https://wallpaperboat.com/wp-content/uploads/2019/10/smartwatch-02.jpg);
+        background-size:cover;
+
+    }
+    100%{
+        background-image: url(https://aocstore.vtexassets.com/arquivos/ids/158198-800-800?v=638089545808600000&width=800&height=800&aspect=true);
+        background-size:cover;
+
+    }
+}
+
+
+.btn-login{
+    color: aliceblue;
+    font-weight: bolder;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 5px;
+    font-size: 15px;
+    background-color: blue;
+    border-radius: 5px;
+    width: 50%;
+    height: 30px;
+    border: none;
+    display: flex;
+
+    cursor: pointer;
+    transition: .6s;
+}
+
+
+.btn-login:hover{
+    box-shadow: 0px 1px 10px orange;
+    transition: .6s;
+    cursor: pointer;
+}

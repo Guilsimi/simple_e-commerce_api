@@ -1,0 +1,102 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(37, 37, 37);
+}
+
+.content{
+    width: 50%;
+    height: 95vh;
+    border: 1px solid;
+    display: flex;
+    border-radius: 20px;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    background-image: url(https://img.freepik.com/vetores-premium/ilustracao-colorida-do-interior-de-um-supermercado-desenhada-a-mao_1322553-61384.jpg?semt=ais_hybrid);
+}
+
+form{
+    border-radius: 20px;
+
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    background-color: rgba(27, 27, 27, 0.7);
+    border-bottom: 2px solid white;
+    border-top: 2px solid white;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+
+    font-weight: bolder;
+    font-size: 18px;
+
+}
+
+h1{
+    text-align: center;
+}
+
+
+input{
+    width: 70%;
+    display: flex;
+    border: none;
+    height: 25px;
+    border-radius: 5px;
+    background-color: transparent;
+    border-bottom: 1px solid white;
+    color: aliceblue;
+    font-size: 15px;
+}
+
+#btn-cadastro{
+    cursor: pointer;
+    background-color: blue;
+    border: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight:bolder;
+    color: aliceblue;
+    letter-spacing: 6px;
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    transition: .6s;
+}
+
+#btn-cadastro:hover{
+    box-shadow: 0px 1px 10px orange;
+    transition: .6s;
+    cursor: pointer;
+}
+
+a{
+    font-size: 12px;
+    margin-bottom: 15px;
+    text-decoration: none;
+    transition: .6s;
+    font-weight: normal;
+    color: aliceblue;
+}
+
+a:hover{
+    font-size: 20px;
+    color: red;
+    transition: .6s;
+}
+
+input::placeholder{
+    color: white;
+    opacity: .6;
+    font-size: 15px;
+}

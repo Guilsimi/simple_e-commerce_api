@@ -17,6 +17,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String productName;
     private Date date;
     private Double total;
     private int status;
@@ -25,8 +26,9 @@ public class Order {
 
     }
 
-    public Order(Long id, Date date, Double total, Status status) {
+    public Order(Long id, String productName, Date date, Double total, Status status) {
         this.id = id;
+        this.productName = productName;
         this.date = date;
         this.total = total;
         setStatus(status);
@@ -38,6 +40,14 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public Date getDate() {
