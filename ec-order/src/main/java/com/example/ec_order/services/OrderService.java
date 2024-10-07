@@ -24,4 +24,8 @@ public class OrderService {
         Optional<Order> order = orderRepository.findById(id);
         return order.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
     }
+
+    public void insert(Order order) {
+        orderRepository.save(order);
+    }
 }
