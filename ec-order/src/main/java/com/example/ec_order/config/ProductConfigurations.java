@@ -52,9 +52,6 @@ public class ProductConfigurations {
         public Flux<List<ServiceInstance>> get() {
             return Flux.defer(() -> {
                 List<InstanceInfo> instanceInfos = eurekaClient.getInstancesByVipAddressAndAppName("ec-products", serviceId, false);
-                System.out.println(instanceInfos.size());
-                System.out.println(instanceInfos);
-                System.out.println(instanceInfos.toString());
 
                 List<ServiceInstance> serviceInstances = instanceInfos.stream()
                         .map(instanceInfo -> new DefaultServiceInstance(
