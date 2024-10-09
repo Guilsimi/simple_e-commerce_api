@@ -12,6 +12,7 @@ public class Product implements Serializable {
     private Integer quantity;
     private String category;
     private String imageUrl;
+    private String message;
 
     public Product() {
 
@@ -82,6 +83,14 @@ public class Product implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override
