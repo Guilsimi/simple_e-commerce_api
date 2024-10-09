@@ -1,5 +1,6 @@
 package com.example.ec_order.resources;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ec_order.entites.Order;
+import com.example.ec_order.entites.enums.Status;
 import com.example.ec_order.services.GetOrderAndProducts;
 import com.example.ec_order.services.OrderService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.annotation.Resource;
 
 @Resource
@@ -38,9 +41,16 @@ public class GetOrderResources {
         return ResponseEntity.ok().body(order);
     }
 
+    @CircuitBreaker(fallbackMethod = "getOrderFallback", name = "getOrderUsingProductIdCircuitBreaker")
     @GetMapping(value = "/{productsId}/quantity/{quantity}")
     public ResponseEntity<Order> getOrder(@PathVariable Long productsId, @PathVariable Integer quantity) {
         Order order = getOrderAndProducts.getOrder(productsId, quantity);
         return ResponseEntity.ok(order);
     }
+
+    public ResponseEntity<Order> getOrderFallback(Long productsId, Integer quantity, Throwable throwable) {
+        Order order = new Order(0L, "?", new Date(0), 0.0, Status.ERROR_CODE);
+        return ResponseEntity.ok(order);
+    }
+
 }

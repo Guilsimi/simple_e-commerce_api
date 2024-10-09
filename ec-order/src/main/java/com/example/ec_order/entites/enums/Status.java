@@ -4,7 +4,8 @@ public enum Status {
 
     PENDENTE(1),
     ENVIADO(2),
-    CONCLUÍDO(3);
+    CONCLUÍDO(3),
+    ERROR_CODE(4);
 
     private int code;
 
