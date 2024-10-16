@@ -53,4 +53,9 @@ public class GetOrderResources {
         return ResponseEntity.ok(order);
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("Service is up");
+    }
+    
 }
