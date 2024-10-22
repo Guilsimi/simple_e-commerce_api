@@ -17,6 +17,9 @@ public class SpringCloudGatewayConfiguration {
                                 .route("order-route", r -> r.path("/ec-order/**")
                                                 .filters(f -> f.stripPrefix(1))
                                                 .uri("lb://EC-ORDER"))
+                                .route("user-route", r -> r.path("/ec-user/**")
+                                                .filters(f -> f.stripPrefix(1))
+                                                .uri("lb://EC-USER"))
                                 .build();
         }
 

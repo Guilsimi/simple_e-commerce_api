@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.example.ec_user.entities.enums.UserType;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,12 +22,16 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Column(unique = true)
     private String email;
+
+    @Column(unique = true)
+    private String phone;
+    
+    private String name;
     private String password;
     private String address;
-    private String phone;
-    private int userType;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -38,14 +41,13 @@ public class User implements Serializable {
 
     }
 
-    public User(Long id, String name, String email, String password, String address, String phone, UserType userType) {
+    public User(Long id, String name, String email, String password, String address, String phone) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.address = address;
         this.phone = phone;
-        setUserType(userType);
     }
 
     public Long getId() {
@@ -94,16 +96,6 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public UserType getUserType() {
-        return UserType.valueOf(userType);
-    }
-
-    public void setUserType(UserType userType) {
-        if (userType != null) {
-            this.userType = userType.getCode();
-        }
     }
 
     public Set<Role> getRoles() {
