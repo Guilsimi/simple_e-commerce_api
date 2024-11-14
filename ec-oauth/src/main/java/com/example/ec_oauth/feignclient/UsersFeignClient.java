@@ -1,4 +1,4 @@
-package com.example.ec_oauth.feignclients;
+package com.example.ec_oauth.feignclient;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.ec_oauth.entities.User;
+import com.example.ec_oauth.entities.UserEntity;
 
 @Component
-@FeignClient(name = "ec-user", path="/users")
-public interface UserFeignClient {
+@FeignClient(name = "ec-user", path = "/users")
+public interface UsersFeignClient {
 
     @GetMapping(value = "/search")
-    ResponseEntity<User> findByEmail(@RequestParam String email);
-    
+    ResponseEntity<UserEntity> findByEmail(@RequestParam String email);
+
 }

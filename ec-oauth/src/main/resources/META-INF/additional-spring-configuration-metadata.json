@@ -1,0 +1,34 @@
+{
+    "properties": [
+        {
+            "name": "ec.auth.provider-uri",
+            "type": "java.lang.String",
+            "description": "Authentication server provider's uri"
+        },
+        {
+            "name": "ec.auth.auth-endpoint",
+            "type": "java.lang.String",
+            "description": "Autheorization endpoint"
+        },
+        {
+            "name": "ec.auth.jks.keypass",
+            "type": "java.lang.String",
+            "description": "Jks key password"
+        },
+        {
+            "name": "ec.auth.jks.storepass",
+            "type": "java.lang.String",
+            "description": "Jks store password"
+        },
+        {
+            "name": "ec.auth.jks.alias",
+            "type": "java.lang.String",
+            "description": "Jks alias"
+        },
+        {
+            "name": "ec.auth.jks.path",
+            "type": "java.lang.String",
+            "description": "Jks path"
+        }
+    ]
+}

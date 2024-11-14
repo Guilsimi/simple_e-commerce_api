@@ -22,13 +22,13 @@ public class UserResources {
     private UserServices userServices;
 
     @GetMapping(value = "/{id}")
-    private ResponseEntity<User> findById(@PathVariable Long id) {
+    public ResponseEntity<User> findById(@PathVariable Long id) {
         User user = userServices.findById(id);
         return ResponseEntity.ok().body(user);
     }
 
     @GetMapping(value = "/search")
-    private ResponseEntity<User> findByEmail(@RequestParam String email) {
+    public ResponseEntity<User> findByEmail(@RequestParam String email) {
         User user = userServices.findByEmail(email);
         return ResponseEntity.ok().body(user);
     }

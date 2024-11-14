@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
 
     private Long id;
     private String email;
@@ -19,11 +19,11 @@ public class User implements UserDetails {
     private String address;
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
+    public UserEntity() {
 
     }
 
-    public User(Long id, String name, String email, String password, String address, String phone) {
+    public UserEntity(Long id, String name, String email, String password, String address, String phone) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -100,7 +100,7 @@ public class User implements UserDetails {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        User other = (User) obj;
+        UserEntity other = (UserEntity) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -111,9 +111,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(r -> new SimpleGrantedAuthority(r.getRole()))
-                .collect(Collectors.toList());
+        return roles.stream().map(r -> new SimpleGrantedAuthority(
+            r.getRole()
+        )).collect(Collectors.toList());
     }
 
     @Override

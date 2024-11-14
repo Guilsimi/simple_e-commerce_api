@@ -1,32 +1,31 @@
 package com.example.ec_oauth.services;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.ec_oauth.entities.User;
-import com.example.ec_oauth.feignclients.UserFeignClient;
+import com.example.ec_oauth.entities.UserEntity;
+import com.example.ec_oauth.feignclient.UsersFeignClient;
 
 @Service
 public class UserService implements UserDetailsService {
 
-    private static Logger logger = LoggerFactory.getLogger(UserService.class);
-
     @Autowired
-    private UserFeignClient userFeignClient;
+    private UsersFeignClient userFeignCLient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userFeignClient.findByEmail(username).getBody();
+        UserEntity user = userFeignCLient.findByEmail(username).getBody();
         if (user == null) {
-            logger.error("Email not found" + username);
-            throw new UsernameNotFoundException("Usuário não encontrado");
-        } 
-        logger.info("Email found" + username);
-        return user;
+            throw new UsernameNotFoundException("Email not found!");
+        }
+
+        User userDetail = new User(user.getUsername(), user.getPassword(), user.getAuthorities());
+        
+        return userDetail;
     }
+
 }
