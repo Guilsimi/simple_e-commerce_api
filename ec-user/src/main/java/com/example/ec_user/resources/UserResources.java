@@ -1,5 +1,7 @@
 package com.example.ec_user.resources;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +33,12 @@ public class UserResources {
     public ResponseEntity<User> findByEmail(@RequestParam String email) {
         User user = userServices.findByEmail(email);
         return ResponseEntity.ok().body(user);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> findAll() {
+        List<User> users = userServices.findAll();
+        return ResponseEntity.ok().body(users);
     }
 
 }

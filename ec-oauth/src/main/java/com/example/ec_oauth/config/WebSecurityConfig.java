@@ -3,11 +3,12 @@ package com.example.ec_oauth.config;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -45,6 +46,12 @@ import com.nimbusds.jose.proc.SecurityContext;
 @Configuration
 public class WebSecurityConfig {
 
+        @Value("${my.client.id}")
+        private String clientId;
+
+        @Value("${my.client.secret}")
+        private String clientSecret;
+
         @Autowired
         private BCryptPasswordEncoder passwordEncoder;
 
@@ -58,16 +65,16 @@ public class WebSecurityConfig {
         @Bean
         public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
                 http
-                                .authorizeHttpRequests(
-                                                req -> req
-                                                                .anyRequest()
-                                                                .authenticated());
+                                .authorizeHttpRequests(req -> req
+                                                .anyRequest()
+                                                .authenticated());
 
                 return http.formLogin(Customizer.withDefaults()).build();
         }
 
         @Bean
-        public OAuth2TokenCustomizer<JwtEncodingContext> jwtEncodingContextCustomizer(UsersFeignClient usersFeignClient) {
+        public OAuth2TokenCustomizer<JwtEncodingContext> jwtEncodingContextCustomizer(
+                        UsersFeignClient usersFeignClient) {
                 return (context -> {
                         Authentication authentication = context.getPrincipal();
                         if (authentication.getPrincipal() instanceof User) {
@@ -91,24 +98,11 @@ public class WebSecurityConfig {
 
         @Bean
         public RegisteredClientRepository clientRepository() {
-                RegisteredClient userClient = RegisteredClient
-                                .withId("1")
-                                .clientId("myappid")
-                                .clientSecret(passwordEncoder.encode("myappsecret"))
-                                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                                .scope("users:read")
-                                .scope("users:write")
-                                .tokenSettings(
-                                                TokenSettings.builder()
-                                                                .accessTokenTimeToLive(Duration.ofSeconds(84600))
-                                                                .build())
-                                .build();
 
                 RegisteredClient authClient = RegisteredClient
-                                .withId("2")
-                                .clientId("admclient")
-                                .clientSecret(passwordEncoder.encode("adm123"))
+                                .withId(UUID.randomUUID().toString())
+                                .clientId(clientId)
+                                .clientSecret(passwordEncoder.encode(clientSecret))
                                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
@@ -129,14 +123,14 @@ public class WebSecurityConfig {
                                                                 .build())
                                 .build();
 
-                return new InMemoryRegisteredClientRepository(
-                                Arrays.asList(userClient, authClient));
+                return new InMemoryRegisteredClientRepository(authClient);
         }
 
         @Bean
         public AuthorizationServerSettings providerSettings(AuthProperties properties) {
                 return AuthorizationServerSettings.builder()
                                 .issuer(properties.getProviderUri())
+                                .jwkSetEndpoint("/oauth2/jwks")
                                 .build();
         }
 
@@ -149,8 +143,7 @@ public class WebSecurityConfig {
                 final KeyStore keyStore = KeyStore.getInstance("JKS");
                 keyStore.load(inputStream, jksProperties.getStorepass().toCharArray());
 
-                RSAKey rsaKey = RSAKey.load(
-                                keyStore,
+                RSAKey rsaKey = RSAKey.load(keyStore,
                                 jksProperties.getAlias(),
                                 jksProperties.getKeypass().toCharArray());
 
@@ -159,11 +152,11 @@ public class WebSecurityConfig {
 
         @Bean
         public JWKSource<SecurityContext> jwkSource(JWKSet jwkSet) {
-                return ((jwkSelector, securityContext) -> jwkSelector.select(jwkSet));
+                return (jwkSelector, context) -> jwkSelector.select(jwkSet);
         }
 
         @Bean
-        public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
-                return new NimbusJwtEncoder(jwkSource);
+        public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwk) {
+                return new NimbusJwtEncoder(jwk);
         }
 }

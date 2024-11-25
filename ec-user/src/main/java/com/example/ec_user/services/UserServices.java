@@ -1,5 +1,6 @@
 package com.example.ec_user.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,9 @@ public class UserServices {
     public User findByEmail(String email) {
         Optional<User> userFound = userRepository.findByEmail(email);
         return userFound.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }

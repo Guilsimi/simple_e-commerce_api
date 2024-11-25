@@ -46,7 +46,7 @@ public class AuthProperties {
         private String alias;
 
         @NotBlank
-        private String Path;
+        private String path;
 
         public String getKeypass() {
             return keypass;
@@ -73,11 +73,11 @@ public class AuthProperties {
         }
 
         public String getPath() {
-            return Path;
+            return path;
         }
 
         public void setPath(String path) {
-            Path = path;
+            this.path = path;
         }
 
     }
