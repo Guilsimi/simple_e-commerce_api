@@ -14,11 +14,11 @@ import com.example.ec_oauth.feignclient.UsersFeignClient;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private UsersFeignClient userFeignCLient;
+    private UsersFeignClient userFeignClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userFeignCLient.findByEmail(username).getBody();
+        UserEntity user = userFeignClient.findByEmail(username).getBody();
         if (user == null) {
             throw new UsernameNotFoundException("Email not found!");
         }

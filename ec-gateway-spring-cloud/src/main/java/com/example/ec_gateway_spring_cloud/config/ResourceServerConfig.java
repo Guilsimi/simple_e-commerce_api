@@ -24,55 +24,58 @@ import reactor.core.publisher.Mono;
 @EnableWebSecurity
 public class ResourceServerConfig {
 
-    private static final String[] PUBLIC = { "/ec-oauth/**" };
-    private static final String[] ADMIN = { "/ec-user/**", "/ec-config-server/**" };
-    private static final String[] CLIENT = { "/ec-order/**", "/ec-cart-/**", "/ec-payment/**",
-            "/ec-product/**" };
+        private static final String[] PUBLIC = { "/ec-oauth/**" };
+        private static final String[] ADMIN = { "/ec-user/**", "/ec-config-server/**" };
+        private static final String[] CLIENT_GET = { "/ec-orders/**", "/ec-cart-/**", "/ec-payment/**",
+                        "/ec-product/**" };
+        private static final String[] CLIENT_POST = { "/ec-orders/**", "/ec-cart-/**", "/ec-payment/**" };
 
-    @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        @Bean
+        public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
-        http
-                .authorizeExchange(
-                        auth -> auth
-                                .pathMatchers(PUBLIC).permitAll()
-                                .pathMatchers(ADMIN).hasAnyRole("ADMINISTRADOR")
-                                .pathMatchers(HttpMethod.GET, CLIENT).hasAnyRole("CLIENTE")
-                                .anyExchange().authenticated())
-                .csrf(
-                        csrf -> csrf.disable())
-                .oauth2ResourceServer(
-                        resource -> resource
-                                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                http
+                                .authorizeExchange(
+                                                auth -> auth
+                                                                .pathMatchers(PUBLIC).permitAll()
+                                                                .pathMatchers(ADMIN).hasAnyRole("ADMINISTRADOR")
+                                                                .pathMatchers(HttpMethod.GET, CLIENT_GET).hasAnyRole("ADMINISTRADOR", "CLIENTE")
+                                                                .pathMatchers(HttpMethod.POST, CLIENT_POST).hasAnyRole("ADMINISTRADOR", "CLIENTE")
+                                                                .anyExchange().authenticated())
+                                .csrf(
+                                                csrf -> csrf.disable())
+                                .oauth2ResourceServer(
+                                                resource -> resource
+                                                                .jwt(jwt -> jwt.jwtAuthenticationConverter(
+                                                                                jwtAuthenticationConverter())));
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    private Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter() {
-        JwtAuthenticationConverter jwtAuthenticator = new JwtAuthenticationConverter();
+        private Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter() {
+                JwtAuthenticationConverter jwtAuthenticator = new JwtAuthenticationConverter();
 
-        jwtAuthenticator.setJwtGrantedAuthoritiesConverter(
-                jwt -> {
-                    List<String> authStringList = jwt.getClaimAsStringList("authorities");
+                jwtAuthenticator.setJwtGrantedAuthoritiesConverter(
+                                jwt -> {
+                                        List<String> authStringList = jwt.getClaimAsStringList("authorities");
 
-                    if (authStringList == null) {
-                        return Collections.emptyList();
-                    }
+                                        if (authStringList == null) {
+                                                return Collections.emptyList();
+                                        }
 
-                    JwtGrantedAuthoritiesConverter scopesConverter = new JwtGrantedAuthoritiesConverter();
+                                        JwtGrantedAuthoritiesConverter scopesConverter = new JwtGrantedAuthoritiesConverter();
 
-                    Collection<GrantedAuthority> grantedAuthorities = scopesConverter.convert(jwt);
+                                        Collection<GrantedAuthority> grantedAuthorities = scopesConverter.convert(jwt);
 
-                    grantedAuthorities.addAll(authStringList.stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .toList());
+                                        grantedAuthorities.addAll(authStringList.stream()
+                                                        .map(SimpleGrantedAuthority::new)
+                                                        .toList());
 
-                    return grantedAuthorities;
-                });
+                                        return grantedAuthorities;
+                                });
 
-        return jwt -> {
-            return Mono.just(jwtAuthenticator.convert(jwt));
-        };
-    }
+                return jwt -> {
+                        return Mono.just(jwtAuthenticator.convert(jwt));
+                };
+        }
 
 }

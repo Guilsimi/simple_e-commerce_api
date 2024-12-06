@@ -17,7 +17,7 @@ import jakarta.annotation.Resource;
 
 @RestController
 @Resource
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/user")
 public class UserResources {
 
     @Autowired

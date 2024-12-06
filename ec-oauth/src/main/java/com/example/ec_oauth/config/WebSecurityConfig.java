@@ -66,6 +66,7 @@ public class WebSecurityConfig {
         public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
                 http
                                 .authorizeHttpRequests(req -> req
+                                                .requestMatchers("/jwt/user").permitAll()
                                                 .anyRequest()
                                                 .authenticated());
 

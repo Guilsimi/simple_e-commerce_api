@@ -15,11 +15,11 @@ public class SpringCloudGatewayConfiguration {
                                 .route("product-route", r -> r.path("/ec-product/**")
                                                 .filters(f -> f.stripPrefix(1))
                                                 .uri("lb://EC-PRODUCTS"))
-                                .route("order-route", r -> r.path("/ec-order/**")
+                                .route("orders-route", r -> r.path("/ec-orders/**")
                                                 .filters(f -> f.stripPrefix(1)
                                                                 .addResponseHeader(HttpHeaders.SET_COOKIE,
                                                                                 "cookieName=cookieValue; Path=/; HttpOnly"))
-                                                .uri("lb://EC-ORDER"))
+                                                .uri("lb://EC-ORDERS"))
                                 .route("user-route", r -> r.path("/ec-user/**")
                                                 .filters(f -> f.stripPrefix(1)
                                                                 .addResponseHeader(HttpHeaders.SET_COOKIE,
