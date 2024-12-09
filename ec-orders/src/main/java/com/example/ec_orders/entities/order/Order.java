@@ -1,6 +1,8 @@
-package com.example.ec_orders.entities;
+package com.example.ec_orders.entities.order;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.example.ec_orders.entities.enums.Status;
 
@@ -17,7 +19,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String productName;
+    private List<Long> productId;
     private Date date;
     private Double total;
     private int status;
@@ -27,9 +29,9 @@ public class Order {
 
     }
 
-    public Order(Long id, String productName, Date date, Double total, Status status, Long userId) {
+    public Order(Long id, List<Long> productId, Date date, Double total, Status status, Long userId) {
         this.id = id;
-        this.productName = productName;
+        this.productId = productId;
         this.date = date;
         this.total = total;
         setStatus(status);
@@ -44,12 +46,16 @@ public class Order {
         this.id = id;
     }
 
-    public String getProductName() {
-        return productName;
+    public List<Long> getProductId() {
+        return productId;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setProductId(List<Long> productId) {
+        this.productId = productId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Date getDate() {
@@ -82,6 +88,13 @@ public class Order {
         return userId;
     }
 
+    public void addProductId(Long productId) {
+        if (this.productId == null) {
+            this.productId = new ArrayList<>();
+        }
+        this.productId.add(productId);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -108,4 +121,3 @@ public class Order {
     }
 
 }
-
