@@ -32,6 +32,8 @@ public class GenerateNewOrder {
 
         orderService.setProductIdList(newOrder.getId());
 
+        utils.decrease(products, quantity);
+
         return newOrder;
     }
 

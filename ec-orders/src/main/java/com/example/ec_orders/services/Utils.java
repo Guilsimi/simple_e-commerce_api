@@ -34,4 +34,10 @@ public class Utils {
         return total;
     }
 
+    public void decrease(List<Long> ids, List<Integer> quantity) {
+        for (int i = 0; i < ids.size(); i++) {
+            productsFeignClient.updateQuantity(ids.get(i), quantity.get(i));
+        }
+    }
+
 }
