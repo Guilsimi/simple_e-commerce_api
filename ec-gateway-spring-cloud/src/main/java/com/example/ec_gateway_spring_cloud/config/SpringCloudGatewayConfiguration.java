@@ -30,6 +30,11 @@ public class SpringCloudGatewayConfiguration {
                                                                 .addResponseHeader(HttpHeaders.SET_COOKIE,
                                                                                 "cookieName=cookieValue; Path=/; HttpOnly"))
                                                 .uri("lb://EC-OAUTH"))
+                                .route("cart-route", r -> r.path("/ec-cart/**")
+                                                .filters(f -> f.stripPrefix(1)
+                                                                .addResponseHeader(HttpHeaders.SET_COOKIE,
+                                                                                "cookieName=cookieValue; Path=/; HttpOnly"))
+                                                .uri("lb://EC-CART"))
                                 .build();
         }
 

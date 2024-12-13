@@ -1,0 +1,5 @@
+INSERT INTO tb_cart (ID)
+VALUES (1);
+
+INSERT INTO tb_cart (ID)
+VALUES (2);
