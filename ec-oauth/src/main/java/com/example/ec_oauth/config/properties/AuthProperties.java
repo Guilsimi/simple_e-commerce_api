@@ -1,12 +1,14 @@
 package com.example.ec_oauth.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+@RefreshScope
 @Component
 @Validated
 @ConfigurationProperties("ec.auth")

@@ -7,6 +7,6 @@ import com.example.ec_product.entities.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
     
+
 }

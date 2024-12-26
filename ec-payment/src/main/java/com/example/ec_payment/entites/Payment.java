@@ -7,8 +7,6 @@ import com.example.ec_payment.entites.enums.PaymentMethod;
 import com.example.ec_payment.entites.enums.PaymentStats;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -17,20 +15,24 @@ import jakarta.persistence.Table;
 public class Payment implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date paymentDate;
+    private Double price;
+    private String emailComprador;
     private Integer stats;
     private Integer paymentMethod;
 
     public Payment() {
     }
-
-    public Payment(Long id, Date paymentDate, PaymentStats stats, PaymentMethod paymentMethod) {
+    
+    public Payment(Long id, Date paymentDate, Double price, String emailComprador, Integer stats,
+            Integer paymentMethod) {
         this.id = id;
         this.paymentDate = paymentDate;
-        setPaymentStats(stats);;
-        setPaymentMethod(paymentMethod);;
+        this.price = price;
+        this.emailComprador = emailComprador;
+        this.stats = stats;
+        this.paymentMethod = paymentMethod;
     }
 
     public Long getId() {
@@ -68,6 +70,22 @@ public class Payment implements Serializable {
         if (paymentMethod != null) {
             this.paymentMethod = paymentMethod.getCode();
         }
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getEmailComprador() {
+        return emailComprador;
+    }
+
+    public void setEmailComprador(String emailComprador) {
+        this.emailComprador = emailComprador;
     }
 
     @Override

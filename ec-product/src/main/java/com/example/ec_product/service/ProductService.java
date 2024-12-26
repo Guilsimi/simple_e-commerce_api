@@ -38,6 +38,10 @@ public class ProductService {
         productRepository.save(newProduct);
     }
 
+    public void addRecentlyViewedProduct(Product product) {
+        
+    }
+
     private void updateData(Product newProduct, Product product) {
         newProduct.setName(
                 product.getName() != null ? product.getName() : newProduct.getName());
