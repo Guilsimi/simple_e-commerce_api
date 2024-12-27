@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ec_orders.entities.order.Order;
-import com.example.ec_orders.entities.order.OrderProductsAssociation;
-import com.example.ec_orders.repositories.OrderProductsRepository;
 import com.example.ec_orders.repositories.OrderRepository;
+import com.example.ec_orders.services.exceptions.ObjectNotCreatedException;
 import com.example.ec_orders.services.exceptions.ResourceNotFoundException;
+import com.example.ec_orders.services.exceptions.ResourceNotUpdatedException;
 
 @Service
 public class OrderService {
@@ -18,43 +18,37 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private OrderProductsRepository orderProductsRepository;
-
-    public List<Order> findAll() {
-        List<Order> orderList = orderRepository.findAll();
-        return orderList;
-    }
-
     public Order findById(Long id) {
         Optional<Order> order = orderRepository.findById(id);
-        return order.orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
+        return order.orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado."));
     }
 
     public List<Order> findByUserId(Long id) {
-        List<Order> userOrders = orderRepository.findByUserId(id);
-        return userOrders;
+        try {
+            List<Order> userOrders = orderRepository.findByUserId(id);
+            return userOrders;
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Pedidos não encontrados.");
+        }
     }
 
     public void insert(Order order) {
-        orderRepository.save(order);
+        try {
+            orderRepository.save(order);
+        } catch (Exception e) {
+            throw new ObjectNotCreatedException("Não foi possível criar o pedido no momento.");
+        }
     }
 
-    public void insertAssociation(OrderProductsAssociation association) {
-        orderProductsRepository.save(association);
-    }
+    public void update(Order orderObj) {
+        try {
+            Order newOrder = findById(orderObj.getId());
+            updateData(newOrder, orderObj);
+            orderRepository.save(newOrder);
+        } catch (Exception e) {
+            throw new ResourceNotUpdatedException("Erro ao atualizar o pedido");
+        }
 
-    public void setProductIdList(Long id) {
-        List<OrderProductsAssociation> associationList = orderProductsRepository.findByOrderId(id);
-        Order order = findById(id);
-        associationList.forEach(ass -> order.addProductId(ass.getProductId()));
-        update(order);
-    }
-
-    private void update(Order orderObj) {
-        Order newOrder = findById(orderObj.getId());
-        updateData(newOrder, orderObj);
-        orderRepository.save(newOrder);
     }
 
     private void updateData(Order newOrder, Order objOrder) {

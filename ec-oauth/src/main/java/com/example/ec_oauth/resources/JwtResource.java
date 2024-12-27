@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ec_oauth.entities.UserEntity;
 import com.example.ec_oauth.feignclient.UsersFeignClient;
+import com.example.ec_oauth.resources.exceptions.ResourceNotFoundException;
 import com.example.ec_oauth.services.JwtServices;
 
 import jakarta.annotation.Resource;
@@ -26,11 +27,15 @@ public class JwtResource {
 
     @GetMapping(value = "/user")
     public ResponseEntity<UserEntity> getLoggedUser(@RequestHeader("Authorization") String bearerToken) {
-        String token = bearerToken.replace("Bearer ", "");
-        String email = jwtService.getClaimFromToken(token, "sub");
-        UserEntity user = userFeignClient.findByEmail(email).getBody();
+        try {
+            String token = bearerToken.replace("Bearer ", "");
+            String email = jwtService.getClaimFromToken(token, "sub");
+            UserEntity user = userFeignClient.findByEmail(email).getBody();
 
-        return ResponseEntity.ok().body(user);
+            return ResponseEntity.ok().body(user);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Erro ao identiicar a sessão. Tente novamente.");
+        }
     }
 
 }

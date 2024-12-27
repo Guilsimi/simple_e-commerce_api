@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ec_carts.entities.foreign.product.Product;
-import com.example.ec_carts.services.CartServices;
+import com.example.ec_carts.services.AssociationServices;
 import com.example.ec_carts.services.ChangeCartItens;
 import com.example.ec_carts.services.Utils;
 
@@ -25,7 +25,7 @@ import jakarta.annotation.Resource;
 public class CartResource {
 
     @Autowired
-    private CartServices cartServices;
+    private AssociationServices associationServices;
 
     @Autowired
     private ChangeCartItens cartItens;
@@ -36,7 +36,7 @@ public class CartResource {
     @GetMapping
     public ResponseEntity<List<Product>> findById(@RequestHeader("Authorization") String bearerToken) {
         Long id = utils.getUserId(bearerToken);
-        List<Product> products = cartServices.findAllProducts(id);
+        List<Product> products = associationServices.findAllProducts(id);
 
         return ResponseEntity.ok().body(products);
     }

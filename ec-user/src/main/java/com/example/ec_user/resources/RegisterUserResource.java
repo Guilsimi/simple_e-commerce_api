@@ -12,9 +12,12 @@ import com.example.ec_user.entities.Role;
 import com.example.ec_user.entities.User;
 import com.example.ec_user.entities.dto.UserDTO;
 import com.example.ec_user.feignclients.CartFeignClient;
+import com.example.ec_user.feignclients.WishlistFeignClient;
 import com.example.ec_user.services.UserServices;
+import com.example.ec_user.services.exceptions.ObjectNotCreatedException;
 import com.example.ec_user.services.exceptions.ResourceNotFoundException;
 
+import feign.FeignException.FeignClientException;
 import jakarta.annotation.Resource;
 
 @RestController
@@ -28,6 +31,9 @@ public class RegisterUserResource {
     @Autowired
     private CartFeignClient cartFeignClient;
 
+    @Autowired
+    private WishlistFeignClient wishlistFeignClient;
+
     @PostMapping
     public ResponseEntity<Void> createNewUser(
             @RequestBody UserDTO userDto) {
@@ -40,8 +46,9 @@ public class RegisterUserResource {
 
             try {
                 cartFeignClient.insert(createdUser.getId());
-            } catch (Exception e) {
-                throw new ResourceNotFoundException("Erro ao criar o carrinho");
+                wishlistFeignClient.insert(createdUser.getId());
+            } catch (FeignClientException e) {
+                throw new ObjectNotCreatedException("Erro ao criar recursos do usuário");
             }
 
             return new ResponseEntity<>(HttpStatus.CREATED);

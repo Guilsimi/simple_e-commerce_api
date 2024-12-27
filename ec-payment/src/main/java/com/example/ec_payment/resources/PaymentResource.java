@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -20,6 +21,7 @@ import com.example.ec_payment.services.Utils;
 import com.openpix.sdk.ChargeResponse;
 
 import jakarta.annotation.Resource;
+
 
 @Resource
 @RestController
@@ -40,6 +42,7 @@ public class PaymentResource {
             @PathVariable Long id,
             @PathVariable Integer paymethod,
             @RequestHeader("Authorization") String bearerToken) throws InterruptedException, ExecutionException {
+
         Order order = orderFeignClient.findById(id).getBody();
         String email = utils.getUserEmail(bearerToken);
 
@@ -54,5 +57,12 @@ public class PaymentResource {
 
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ChargeResponse> findChargeById(@PathVariable Long id) {
+        ChargeResponse response = paymentServices.findById(id);
+        return ResponseEntity.ok().body(response);
+    }
+    
 
 }

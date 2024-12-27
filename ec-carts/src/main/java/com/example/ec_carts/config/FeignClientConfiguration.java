@@ -20,6 +20,8 @@ public class FeignClientConfiguration {
                 serviceIdThreadLocal.set("ec-oauth");
             } else if (url.contains("/products")) {
                 serviceIdThreadLocal.set("ec-products");
+            } else if (url.contains("/new")) {
+                serviceIdThreadLocal.set("ec-wishlist");
             }
         };
     }

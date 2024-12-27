@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Component
-@FeignClient(name = "ec-cart", path = "/insert")
+@FeignClient(name = "ec-cart")
 public interface CartFeignClient {
 
-    @PostMapping("/new/{id}")
+    @PostMapping("/insert/new/cart/{id}")
     ResponseEntity<Void> insert(@PathVariable Long id);
 
 }

@@ -30,7 +30,7 @@ public class LoadBalancerConfiguration {
     @Bean
     @Primary
     ServiceInstanceListSupplier serviceInstanceListSupplier() {
-        servicesList.addAll(Arrays.asList("ec-oauth", "ec-products"));
+        servicesList.addAll(Arrays.asList("ec-oauth", "ec-products", "ec-wishlist"));
         return new DemoServiceInstanceListSupplier(servicesList, discoveryClient);
     }
 

@@ -21,7 +21,7 @@ public class CreateCart {
     @Autowired
     private CartServices services;
 
-    @PostMapping("/new/{id}")
+    @PostMapping("/new/cart/{id}")
     public ResponseEntity<Void> insert(@PathVariable Long id) {
         Cart cart = new Cart(id, null);
         services.insert(cart);

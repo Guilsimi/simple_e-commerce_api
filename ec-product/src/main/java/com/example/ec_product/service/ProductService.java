@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.ec_product.entities.Product;
 import com.example.ec_product.repositories.ProductRepository;
+import com.example.ec_product.service.exceptions.ObjectNotUpdatedException;
 import com.example.ec_product.service.exceptions.ResourceNotFoundException;
 
 @Service
@@ -18,28 +19,37 @@ public class ProductService {
 
     public Product findById(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        return product.orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        return product.orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
     }
 
     public List<Product> findAll() {
-        return productRepository.findAll();
+        try {
+            return productRepository.findAll();
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Ocorreu um erro ao buscar os produtos.");
+        }
     }
 
     public void updateQuantity(Long id, Integer quantity) {
-        Product product = findById(id);
-        Integer updatedQuantity = product.getQuantity() - quantity;
-        product.setQuantity(updatedQuantity);
-        update(product);
+        try {
+            Product product = findById(id);
+            Integer updatedQuantity = product.getQuantity() - quantity;
+            product.setQuantity(updatedQuantity);
+            update(product);
+        } catch (Exception e) {
+            throw new ObjectNotUpdatedException("Erro ao atualizar o produto");
+        }
+
     }
 
     public void update(Product product) {
-        Product newProduct = findById(product.getId());
-        updateData(newProduct, product);
-        productRepository.save(newProduct);
-    }
-
-    public void addRecentlyViewedProduct(Product product) {
-        
+        try {
+            Product newProduct = findById(product.getId());
+            updateData(newProduct, product);
+            productRepository.save(newProduct);
+        } catch (Exception e) {
+            throw new ObjectNotUpdatedException("Erro ao atualizar o produto");
+        }
     }
 
     private void updateData(Product newProduct, Product product) {

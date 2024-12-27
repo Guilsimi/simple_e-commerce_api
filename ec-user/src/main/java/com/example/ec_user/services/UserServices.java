@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.ec_user.entities.User;
 import com.example.ec_user.repositories.UserRepository;
+import com.example.ec_user.services.exceptions.ObjectNotCreatedException;
+import com.example.ec_user.services.exceptions.ObjectNotUpdatedException;
 import com.example.ec_user.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -20,9 +22,13 @@ public class UserServices {
     private BCryptPasswordEncoder passwordEncoder;
 
     public User insert(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User createdUser = userRepository.save(user);
-        return createdUser;
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User createdUser = userRepository.save(user);
+            return createdUser;
+        } catch (Exception e) {
+            throw new ObjectNotCreatedException("Erro ao criar o usuário");
+        }
     }
 
     public User findById(Long id) {
@@ -36,32 +42,30 @@ public class UserServices {
     }
 
     public void update(User user) {
-        User newUser = user;
-        update(newUser, user);
-        userRepository.save(newUser);
+        try {
+            User newUser = user;
+            update(newUser, user);
+            userRepository.save(newUser);
+        } catch (Exception e) {
+            throw new ObjectNotUpdatedException("Erro ao atualizar informações do usuário");
+        }
+
     }
 
     private void update(User newUser, User user) {
         newUser.setId(
-            user.getId() != null ? user.getId() : newUser.getId()
-        );
+                user.getId() != null ? user.getId() : newUser.getId());
         newUser.setName(
-            user.getName() != null ? user.getName() : newUser.getName()
-        );
+                user.getName() != null ? user.getName() : newUser.getName());
         newUser.setEmail(
-            user.getEmail() != null ? user.getEmail() : newUser.getEmail()
-        );
+                user.getEmail() != null ? user.getEmail() : newUser.getEmail());
         newUser.setPhone(
-            user.getPhone() != null ? user.getPhone() : newUser.getPhone()
-        );
+                user.getPhone() != null ? user.getPhone() : newUser.getPhone());
         newUser.setAddress(
-            user.getAddress() != null ? user.getAddress() : newUser.getAddress()
-        );
+                user.getAddress() != null ? user.getAddress() : newUser.getAddress());
         newUser.setPassword(
-            user.getPassword() != null ? user.getPassword() : newUser.getPassword()
-        );
+                user.getPassword() != null ? user.getPassword() : newUser.getPassword());
         newUser.setRoles(
-            user.getRoles() != null ? user.getRoles() : newUser.getRoles()
-        );
+                user.getRoles() != null ? user.getRoles() : newUser.getRoles());
     }
 }

@@ -40,6 +40,11 @@ public class SpringCloudGatewayConfiguration {
                                                                 .addResponseHeader(HttpHeaders.SET_COOKIE,
                                                                                 "cookieName=cookieValue; Path=/; HttpOnly"))
                                                 .uri("lb://EC-PAYMENT"))
+                                .route("wishlist-route", r -> r.path("/ec-wishlist/**")
+                                                .filters(f -> f.stripPrefix(1)
+                                                                .addResponseHeader(HttpHeaders.SET_COOKIE,
+                                                                                "cookieName=cookieValue; Path=/; HttpOnly"))
+                                                .uri("lb://EC-WISHLIST"))
                                 .build();
         }
 

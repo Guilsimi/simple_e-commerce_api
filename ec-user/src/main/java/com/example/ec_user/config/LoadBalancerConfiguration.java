@@ -1,8 +1,11 @@
 package com.example.ec_user.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
@@ -10,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 
 import reactor.core.publisher.Flux;
@@ -18,52 +20,56 @@ import reactor.core.publisher.Flux;
 @Configuration
 public class LoadBalancerConfiguration {
 
-    private final EurekaClient discoveryClient;
+    @Autowired
+    private EurekaClient discoveryClient;
 
-    public LoadBalancerConfiguration(EurekaClient discoveryClient) {
-        this.discoveryClient = discoveryClient;
-    }
+    private List<String> servicesList = new ArrayList<>();
+
+    public static String publicServiceId;
 
     @Bean
     @Primary
     ServiceInstanceListSupplier serviceInstanceListSupplier() {
-        return new DemoServiceInstanceListSupplier("ec-cart", discoveryClient);
+        servicesList.addAll(Arrays.asList("ec-cart", "ec-wishlist"));
+        return new DemoServiceInstanceListSupplier(servicesList, discoveryClient);
     }
 
     class DemoServiceInstanceListSupplier implements ServiceInstanceListSupplier {
-        private final String serviceId;
+        private final List<String> allServices;
         private final EurekaClient eurekaClient;
 
-        DemoServiceInstanceListSupplier(String serviceId, EurekaClient eurekaClient) {
-            this.serviceId = serviceId;
+        DemoServiceInstanceListSupplier(List<String> allServices, EurekaClient eurekaClient) {
+            this.allServices = allServices;
             this.eurekaClient = eurekaClient;
         }
 
         @Override
         public String getServiceId() {
-            return serviceId;
-        }
-
-        public EurekaClient getEurekaClient() {
-            return eurekaClient;
+            String serviceId = FeignClientConfiguration.serviceIdThreadLocal.get();
+            return serviceId != null ? serviceId : "default-service";
         }
 
         @Override
         public Flux<List<ServiceInstance>> get() {
-            return Flux.defer(() -> {
-                List<InstanceInfo> instanceInfos = eurekaClient.getInstancesByVipAddressAndAppName("ec-cart", serviceId, false);
+            List<ServiceInstance> serviceInstancesList = new ArrayList<>();
 
-                List<ServiceInstance> serviceInstances = instanceInfos.stream()
-                        .map(instanceInfo -> new DefaultServiceInstance(
-                                instanceInfo.getInstanceId(),
-                                instanceInfo.getAppName(),
-                                instanceInfo.getHostName(),
-                                instanceInfo.getPort(),
-                                false))
-                        .collect(Collectors.toList());
+            for (String services : allServices) {
+                if (services.equals(getServiceId())) {
+                    serviceInstancesList.addAll(
+                        eurekaClient
+                                .getInstancesByVipAddressAndAppName(services, services, false)
+                                .stream()
+                                .map(instanceInfo -> new DefaultServiceInstance(
+                                        instanceInfo.getInstanceId(),
+                                        instanceInfo.getAppName(),
+                                        instanceInfo.getHostName(),
+                                        instanceInfo.getPort(),
+                                        false))
+                                .collect(Collectors.toList()));
+                }
+            }
 
-                return Flux.just(serviceInstances);
-            });
+            return Flux.just(serviceInstancesList);
         }
 
     }
