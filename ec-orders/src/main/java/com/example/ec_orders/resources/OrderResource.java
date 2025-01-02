@@ -3,7 +3,6 @@ package com.example.ec_orders.resources;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +22,6 @@ import jakarta.annotation.Resource;
 @RestController
 @RequestMapping(value = "/orders")
 public class OrderResource {
-
-    @Value("${test.config}")
-    private String configs;
 
     @Autowired
     private OrderService orderService;
