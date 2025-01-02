@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/ec-carts/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-config-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-eureka-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-gateway-spring-cloud/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-oauth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-orders/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-payment/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-product/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-user/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ec-wishlist/src/main/java" charset="UTF-8" />
+  </component>
+</project>

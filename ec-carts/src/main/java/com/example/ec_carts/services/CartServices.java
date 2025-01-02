@@ -18,6 +18,9 @@ public class CartServices {
     private CartRepository cartRepository;
 
     public Cart findById(Long id) {
+        if (id == null) {
+            throw new ResourceNotFoundException("Impossível localizar objeto: ID null");
+        }
         Optional<Cart> cart = cartRepository.findById(id);
         return cart.orElseThrow(() -> new ResourceNotFoundException("Carrinho não encontrado"));
     }

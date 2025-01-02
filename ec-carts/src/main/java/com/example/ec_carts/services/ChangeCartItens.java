@@ -14,9 +14,6 @@ public class ChangeCartItens {
     private CartServices services;
 
     @Autowired
-    private AssociationServices assServices;
-
-    @Autowired
     private AssociationServices associationServices;
 
     public void addProductToCart(Long id, Long productId) {
@@ -33,7 +30,7 @@ public class ChangeCartItens {
 
     public void removeProductFromCart(Long id, Long productId) {
         try {
-            assServices.removeAssociation(id, productId);
+            associationServices.removeAssociation(id, productId);
         } catch (Exception e) {
             throw new ResourceNotUpdatedException("Erro ao remover o produto do carrinho");
         }

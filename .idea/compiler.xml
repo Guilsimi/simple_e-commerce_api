@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ec-product" />
+        <module name="ec-gateway-spring-cloud" />
+        <module name="ec-eureka-server" />
+        <module name="ec-payment" />
+        <module name="ec-wishlist" />
+        <module name="ec-oauth" />
+        <module name="ec-user" />
+        <module name="ec-config-server" />
+        <module name="ec-carts" />
+        <module name="ec-orders" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ec-carts" options="-parameters" />
+      <module name="ec-config-server" options="-parameters" />
+      <module name="ec-eureka-server" options="-parameters" />
+      <module name="ec-gateway-spring-cloud" options="-parameters" />
+      <module name="ec-oauth" options="-parameters" />
+      <module name="ec-orders" options="-parameters" />
+      <module name="ec-payment" options="-parameters" />
+      <module name="ec-product" options="-parameters" />
+      <module name="ec-user" options="-parameters" />
+      <module name="ec-wishlist" options="-parameters" />
+    </option>
+  </component>
+</project>
