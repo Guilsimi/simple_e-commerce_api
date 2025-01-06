@@ -61,7 +61,18 @@ public class PaymentResource {
     @GetMapping(value = "/{id}")
     public ResponseEntity<ChargeResponse> findChargeById(@PathVariable Long id) {
         ChargeResponse response = paymentServices.findById(id);
+        System.out.println("Status = " + response.getCharge().getStatus());
+        updateOrder(id);
         return ResponseEntity.ok().body(response);
+    }
+
+    private void updateOrder(Long id) {
+        ChargeResponse response = paymentServices.findById(id);
+        if (response.getCharge().getStatus().equals("EXPIRED")) {
+            orderFeignClient.update(id, 6);
+        } else if (response.getCharge().getStatus().equals("COMPLETED")) {
+            orderFeignClient.update(id, 2);
+        } 
     }
     
 
