@@ -107,7 +107,6 @@ public class WebSecurityConfig {
                                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                                .redirectUri("http://localhost:3000/authorized")
                                 .redirectUri("https://oauthdebugger.com/debug")
                                 .redirectUri("https://oauth.pstmn.io/v1/callback")
                                 .scope("myuser:read")

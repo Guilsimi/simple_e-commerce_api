@@ -3,9 +3,11 @@ package com.example.ec_orders.entities.enums;
 public enum Status {
 
     PENDENTE(1),
-    ENVIADO(2),
-    CONCLUÍDO(3),
-    ERROR_CODE(4);
+    CONFIRMADO(2),
+    ENVIADO(3),
+    CONCLUÍDO(4),
+    ERROR_CODE(5),
+    CANCELADO(6);
 
     private int code;
 

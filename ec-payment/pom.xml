@@ -76,6 +76,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Kotlin Dependencies -->
 
 		<dependency>
@@ -125,7 +131,7 @@
 
 	<repositories>
 		<repository>
-			<id>central</id>
+			<id>sonatype</id>
 			<name>Central Repository</name>
 			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
