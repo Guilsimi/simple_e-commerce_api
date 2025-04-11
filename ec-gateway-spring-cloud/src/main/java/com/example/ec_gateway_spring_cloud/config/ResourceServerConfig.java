@@ -24,11 +24,14 @@ import reactor.core.publisher.Mono;
 @EnableWebSecurity
 public class ResourceServerConfig {
 
-        private static final String[] PUBLIC = { "/ec-oauth/**", "/ec-user/register", "/ec-cart/insert/**" };
+        private static final String[] PUBLIC = { "/actuator/**", "/ec-oauth/**", "/ec-user/register",
+                        "/ec-cart/insert/**" };
         private static final String[] ADMIN = { "/ec-user/user/**", "/ec-config-server/**" };
-        private static final String[] CLIENT_GET = { "/ec-orders/**", "/ec-cart/insert", "/ec-cart/cart/**", "/ec-wishlist/insert", "/ec-wishlist/wishlist/**", "/ec-payment/**",
+        private static final String[] CLIENT_GET = { "/ec-orders/**", "/ec-cart/insert", "/ec-cart/cart/**",
+                        "/ec-wishlist/insert", "/ec-wishlist/wishlist/**", "/ec-payment/**",
                         "/ec-product/**" };
-        private static final String[] CLIENT_POST = { "/ec-orders/**", "/ec-cart/insert", "/ec-cart/cart/**", "/ec-wishlist/insert", "/ec-wishlist/wishlist/**", "/ec-payment/**" };
+        private static final String[] CLIENT_POST = { "/ec-orders/**", "/ec-cart/insert", "/ec-cart/cart/**",
+                        "/ec-wishlist/insert", "/ec-wishlist/wishlist/**", "/ec-payment/**" };
 
         @Bean
         public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -38,8 +41,10 @@ public class ResourceServerConfig {
                                                 auth -> auth
                                                                 .pathMatchers(PUBLIC).permitAll()
                                                                 .pathMatchers(ADMIN).hasAnyRole("ADMINISTRADOR")
-                                                                .pathMatchers(HttpMethod.GET, CLIENT_GET).hasAnyRole("ADMINISTRADOR", "CLIENTE")
-                                                                .pathMatchers(HttpMethod.POST, CLIENT_POST).hasAnyRole("ADMINISTRADOR", "CLIENTE")
+                                                                .pathMatchers(HttpMethod.GET, CLIENT_GET)
+                                                                .hasAnyRole("ADMINISTRADOR", "CLIENTE")
+                                                                .pathMatchers(HttpMethod.POST, CLIENT_POST)
+                                                                .hasAnyRole("ADMINISTRADOR", "CLIENTE")
                                                                 .anyExchange().authenticated())
                                 .csrf(
                                                 csrf -> csrf.disable())

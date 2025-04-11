@@ -1,0 +1,299 @@
+services:
+  # Bancos de dados dos microsserviços
+  ec-cart-db:
+    networks:
+      - ec-net
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - ec_cart_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_ec_cart"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ec-orders-db:
+    networks:
+      - ec-net
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5434:5432"
+    volumes:
+      - ec_orders_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_ec_orders"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ec-payment-db:
+    networks:
+      - ec-net
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5435:5432"
+    volumes:
+      - ec_payment_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_ec_payment"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ec-products-db:
+    networks:
+      - ec-net
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5436:5432"
+    volumes:
+      - ec_products_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_ec_products"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ec-user-db:
+    networks:
+      - ec-net
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5437:5432"
+    volumes:
+      - ec_user_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_ec_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ec-wishlist-db:
+    networks:
+      - ec-net
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5438:5432"
+    volumes:
+      - ec_wishlist_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_ec_wishlist"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Microsserviços
+
+  ec-config-server:
+    build: ./ec-config-server
+    image: ec-config-server:v1
+    networks:
+      - ec-net
+    ports:
+      - "8888:8888"
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GITHUB_CONFIG_SERVER: ${GITHUB_CONFIG_SERVER}
+      GITHUB_USERNAME: ${GITHUB_USERNAME}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      ec-cart-db:
+        condition: service_healthy
+      ec-orders-db:
+        condition: service_healthy
+      ec-payment-db:
+        condition: service_healthy
+      ec-products-db:
+        condition: service_healthy
+      ec-user-db:
+        condition: service_healthy
+      ec-wishlist-db:
+        condition: service_healthy
+
+  ec-eureka-server:
+    build: ./ec-eureka-server
+    image: ec-eureka-server:v1
+    networks:
+      - ec-net
+    ports:
+      - "8761:8761"
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    healthcheck:
+      test:
+        ["CMD", "curl", "-f", "http://ec-eureka-server:8761/actuator/health"]
+    depends_on:
+      ec-config-server:
+        condition: service_healthy
+
+  ec-gateway-spring-cloud:
+    build: ./ec-gateway-spring-cloud
+    image: ec-gateway-spring-cloud:v1
+    networks:
+      - ec-net
+    ports:
+      - "8765:8765"
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://ec-gateway-spring-cloud:8765/actuator/health",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+    depends_on:
+      ec-eureka-server:
+        condition: service_healthy
+      ec-config-server:
+        condition: service_healthy
+
+  ec-oauth:
+    build: ./ec-oauth
+    image: ec-oauth:v1
+    networks:
+      - ec-net
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://ec-gateway-spring-cloud:8765/ec-oauth/actuator/health",
+        ]
+    depends_on:
+      ec-gateway-spring-cloud:
+        condition: service_healthy
+
+  ec-carts:
+    build: ./ec-carts
+    image: ec-carts:v1
+    networks:
+      - ec-net
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    depends_on:
+      ec-oauth:
+        condition: service_healthy
+
+  ec-orders:
+    build: ./ec-orders
+    image: ec-orders:v1
+    networks:
+      - ec-net
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    depends_on:
+      ec-oauth:
+        condition: service_healthy
+
+  ec-payment:
+    build: ./ec-payment
+    image: ec-payment:v1
+    networks:
+      - ec-net
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    depends_on:
+      ec-oauth:
+        condition: service_healthy
+
+  ec-product:
+    build: ./ec-product
+    image: ec-product:v1
+    networks:
+      - ec-net
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    depends_on:
+      ec-oauth:
+        condition: service_healthy
+
+  ec-user:
+    build: ./ec-user
+    image: ec-user:v1
+    networks:
+      - ec-net
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    depends_on:
+      ec-oauth:
+        condition: service_healthy
+
+  ec-wishlist:
+    build: ./ec-wishlist
+    image: ec-wishlist:v1
+    networks:
+      - ec-net
+    environment:
+      CONFIG_SERVER_PORT: http://ec-config-server:8888
+    depends_on:
+      ec-oauth:
+        condition: service_healthy
+
+  # PgAdmin
+  pgadmin:
+    networks:
+      - ec-net
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    depends_on:
+      - ec-cart-db
+      - ec-orders-db
+      - ec-payment-db
+      - ec-products-db
+      - ec-user-db
+      - ec-wishlist-db
+
+networks:
+  ec-net:
+    driver: bridge
+
+volumes:
+  ec_cart_data:
+  ec_orders_data:
+  ec_payment_data:
+  ec_products_data:
+  ec_user_data:
+  ec_wishlist_data:
