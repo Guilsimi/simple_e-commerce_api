@@ -3,6 +3,7 @@ package com.example.ec_oauth.config;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -54,6 +55,10 @@ public class WebSecurityConfig {
 
         @Autowired
         private BCryptPasswordEncoder passwordEncoder;
+
+        private static final String[] redirectUriList = {
+                        "https://oauthdebugger.com/debug",
+                        "https://oauth.pstmn.io/v1/callback" };
 
         @Bean
         @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -107,8 +112,7 @@ public class WebSecurityConfig {
                                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                                .redirectUri("https://oauthdebugger.com/debug")
-                                .redirectUri("https://oauth.pstmn.io/v1/callback")
+                                .redirectUris(uriList -> uriList.addAll(Arrays.asList(redirectUriList)))
                                 .scope("myuser:read")
                                 .scope("myuser:write")
                                 .tokenSettings(
