@@ -122,7 +122,8 @@ services:
       GITHUB_CONFIG_SERVER: ${GITHUB_CONFIG_SERVER}
       GITHUB_USERNAME: ${GITHUB_USERNAME}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      test:
+        ["CMD", "curl", "-f", "http://ec-config-server:8888/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 10

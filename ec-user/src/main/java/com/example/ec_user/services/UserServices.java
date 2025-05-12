@@ -49,7 +49,6 @@ public class UserServices {
         } catch (Exception e) {
             throw new ObjectNotUpdatedException("Erro ao atualizar informações do usuário");
         }
-
     }
 
     private void update(User newUser, User user) {

@@ -25,4 +25,6 @@ replay_pid*
 
 .vscode/
 
-ec-oauth/src/main/resources/keystore/
+ec-gateway-spring-cloud/src/main/resources/ec-auth.pub
+ec-oauth/src/main/resources/ec-auth.key
+ec-oauth/src/main/resources/ec-auth.pub

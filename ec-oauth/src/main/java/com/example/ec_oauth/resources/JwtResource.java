@@ -38,9 +38,4 @@ public class JwtResource {
         }
     }
 
-    @GetMapping(value = "/test")
-    public ResponseEntity<String> testando() {
-        return ResponseEntity.ok().body("EStá funcionando");
-    }
-
 }
