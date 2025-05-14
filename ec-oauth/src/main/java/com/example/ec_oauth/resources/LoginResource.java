@@ -4,8 +4,8 @@ import java.time.Instant;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -41,8 +41,8 @@ public class LoginResource {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest req) {
         UserEntity user = userFeignClient.findByEmail(req.email()).getBody();
 
-        if (user.equals(null) || !passwordEncoder.matches(req.password(), user.getPassword())) {
-            throw new BadCredentialsException("Invalid username or password");
+        if (user == null || !passwordEncoder.matches(req.password(), user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Instant now = Instant.now();
@@ -50,11 +50,11 @@ public class LoginResource {
         String authorities = user.getRoles().stream().map(Role::getRole).collect(Collectors.joining(" "));
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("Ec-Oauth")
+                .issuer("ec-oauth")
                 .subject(user.getEmail())
                 .issuedAt(now)
-                .claim("authorities ", authorities)
-                .expiresAt(now.plusSeconds(500))
+                .claim("authorities", authorities)
+                .expiresAt(now.plusSeconds(3600))
                 .build();
 
         String jwt = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

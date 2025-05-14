@@ -1,6 +1,7 @@
 package com.example.ec_gateway_spring_cloud.config;
 
 import java.security.interfaces.RSAPublicKey;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,12 +14,12 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
+
 @Configuration
 @EnableWebFluxSecurity
-public class ResourceServerConfig {
-
-        @Value("${jwt.public-key}")
-        private RSAPublicKey publicKey;
+public class ResourceServerConfiguration {
 
         private static final String[] PUBLIC = { "/actuator/**", "/ec-oauth/**",
                         "/ec-user/register",
@@ -42,8 +43,15 @@ public class ResourceServerConfig {
         }
 
         @Bean
-        public ReactiveJwtDecoder decoder() {
-                return NimbusReactiveJwtDecoder.withPublicKey(publicKey).build();
+        public ReactiveJwtDecoder decoder(
+                        @Value("${jwt.public-key}") RSAPublicKey publicKey) {
+                return NimbusReactiveJwtDecoder.withPublicKey(publicKey)
+                                .jwtProcessorCustomizer(processor -> processor.setJWTClaimsSetVerifier(
+                                                new DefaultJWTClaimsVerifier<>(
+                                                                new JWTClaimsSet.Builder()
+                                                                                .issuer("ec-oauth").build(),
+                                                                Set.of("sub", "exp", "iat", "authorities"))))
+                                .build();
         }
 
 }

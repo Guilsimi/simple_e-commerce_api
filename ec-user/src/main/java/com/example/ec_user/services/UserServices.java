@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.ec_user.entities.Role;
 import com.example.ec_user.entities.User;
 import com.example.ec_user.repositories.UserRepository;
 import com.example.ec_user.services.exceptions.ObjectNotCreatedException;
@@ -24,6 +25,7 @@ public class UserServices {
     public User insert(User user) {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.getRoles().add(new Role(2L, "ROLE_CLIENTE"));
             User createdUser = userRepository.save(user);
             return createdUser;
         } catch (Exception e) {
@@ -38,7 +40,11 @@ public class UserServices {
 
     public User findByEmail(String email) {
         Optional<User> userFound = userRepository.findByEmail(email);
-        return userFound.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        return userFound.orElse(null);
+    }
+
+    public Boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public void update(User user) {

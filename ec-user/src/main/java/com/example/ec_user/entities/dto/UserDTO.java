@@ -6,14 +6,32 @@ import java.util.Set;
 import com.example.ec_user.entities.Role;
 import com.example.ec_user.entities.User;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class UserDTO {
 
     private Long id;
+
+    @NotBlank(message = "email cannot be blank")
+    @Email(message = "Please, insert an valid email format")
     private String email;
+
+    @NotBlank(message = "phone is required")
     private String phone;
+
+    @NotBlank(message = "name cannot be blank")
+    @Size(min = 5, max = 50, message = "name must be 2-50 characters")
     private String name;
+
+    @NotBlank(message = "password cannot be blank")
+    @Size(min = 8, max = 20, message = "password must be 8-20 characters")
     private String password;
+
+    @NotBlank(message = "address is required")
     private String address;
+
     private Set<Role> roles = new HashSet<>();
 
     public UserDTO() {

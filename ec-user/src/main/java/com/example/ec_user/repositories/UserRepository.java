@@ -11,4 +11,6 @@ import com.example.ec_user.entities.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

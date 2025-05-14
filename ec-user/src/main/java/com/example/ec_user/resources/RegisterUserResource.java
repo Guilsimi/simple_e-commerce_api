@@ -1,5 +1,7 @@
 package com.example.ec_user.resources;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,17 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ec_user.entities.Role;
 import com.example.ec_user.entities.User;
 import com.example.ec_user.entities.dto.UserDTO;
+import com.example.ec_user.entities.records.RegisterResponse;
 import com.example.ec_user.feignclients.CartFeignClient;
 import com.example.ec_user.feignclients.WishlistFeignClient;
 import com.example.ec_user.services.UserServices;
 import com.example.ec_user.services.exceptions.ObjectNotCreatedException;
-import com.example.ec_user.services.exceptions.ResourceNotFoundException;
 
 import feign.FeignException.FeignClientException;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 
 @RestController
 @Resource
@@ -35,25 +37,35 @@ public class RegisterUserResource {
     private WishlistFeignClient wishlistFeignClient;
 
     @PostMapping
-    public ResponseEntity<Void> createNewUser(
-            @RequestBody UserDTO userDto) {
+    public ResponseEntity<RegisterResponse> createNewUser(
+            @Valid @RequestBody UserDTO userDto) {
+
+        if (services.existsByEmail(userDto.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new RegisterResponse(
+                    HttpStatus.CONFLICT.value(),
+                    Arrays.asList(
+                            "An account with the email already exists",
+                            "Try to login in existing account or register with other email")));
+        }
+
         try {
             User user = fromDTO(userDto);
             User createdUser = services.insert(user);
-            Role role = new Role(2L, "'ROLE_CLIENTE'");
-            createdUser.getRoles().add(role);
+            createUserResources(createdUser.getId());
             services.update(createdUser);
-
-            try {
-                cartFeignClient.insert(createdUser.getId());
-                wishlistFeignClient.insert(createdUser.getId());
-            } catch (FeignClientException e) {
-                throw new ObjectNotCreatedException("Erro ao criar recursos do usuário");
-            }
 
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
-            throw new ResourceNotFoundException("Erro ao criar o usuário");
+            throw new ObjectNotCreatedException("An error occurred while creating the user.");
+        }
+    }
+
+    private void createUserResources(Long id) {
+        try {
+            cartFeignClient.insert(id);
+            wishlistFeignClient.insert(id);
+        } catch (FeignClientException e) {
+            throw new ObjectNotCreatedException("An error occurred while creating the user resources.");
         }
     }
 

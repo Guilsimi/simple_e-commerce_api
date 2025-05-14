@@ -16,11 +16,11 @@ import com.netflix.discovery.EurekaClient;
 import reactor.core.publisher.Flux;
 
 @Configuration
-public class LoadBalancerConfig {
+public class LoadBalancerConfiguration {
 
     private final EurekaClient discoveryClient;
 
-    public LoadBalancerConfig(EurekaClient discoveryClient) {
+    public LoadBalancerConfiguration(EurekaClient discoveryClient) {
         this.discoveryClient = discoveryClient;
     }
 
@@ -51,7 +51,8 @@ public class LoadBalancerConfig {
         @Override
         public Flux<List<ServiceInstance>> get() {
             return Flux.defer(() -> {
-                List<InstanceInfo> instanceInfos = eurekaClient.getInstancesByVipAddressAndAppName("ec-user", serviceId, false);
+                List<InstanceInfo> instanceInfos = eurekaClient.getInstancesByVipAddressAndAppName("ec-user", serviceId,
+                        false);
 
                 List<ServiceInstance> serviceInstances = instanceInfos.stream()
                         .map(instanceInfo -> new DefaultServiceInstance(
