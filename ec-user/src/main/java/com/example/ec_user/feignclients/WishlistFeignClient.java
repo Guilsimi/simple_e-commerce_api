@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.ec_user.config.FeignClientConfiguration;
 
-@FeignClient(name = "ec-wishlist",  configuration = FeignClientConfiguration.class)
+@FeignClient(name = "ec-wishlist", configuration = FeignClientConfiguration.class)
 public interface WishlistFeignClient {
 
     @PostMapping("/insert/new/wishlist/{id}")

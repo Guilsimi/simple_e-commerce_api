@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ public class RegisterUserResource {
     private WishlistFeignClient wishlistFeignClient;
 
     @PostMapping
+    @Transactional
     public ResponseEntity<RegisterResponse> createNewUser(
             @Valid @RequestBody UserDTO userDto) {
 
@@ -56,7 +58,7 @@ public class RegisterUserResource {
 
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
-            throw new ObjectNotCreatedException("An error occurred while creating the user.");
+            throw new ObjectNotCreatedException("An error occurred while creating the user: " + e.getMessage());
         }
     }
 
@@ -71,7 +73,6 @@ public class RegisterUserResource {
 
     private User fromDTO(UserDTO objUser) {
         return new User(
-                objUser.getId(),
                 objUser.getName(),
                 objUser.getEmail(),
                 objUser.getPassword(),

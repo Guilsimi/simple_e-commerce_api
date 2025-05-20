@@ -70,7 +70,7 @@ public class UserServices {
                 user.getAddress() != null ? user.getAddress() : newUser.getAddress());
         newUser.setPassword(
                 user.getPassword() != null ? user.getPassword() : newUser.getPassword());
-        newUser.setRoles(
+        newUser.getRoles().addAll(
                 user.getRoles() != null ? user.getRoles() : newUser.getRoles());
     }
 }
